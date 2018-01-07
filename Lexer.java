@@ -94,7 +94,10 @@ public class Lexer implements Constants{
 	}
 
 	private static char currentChar(){
-		return str.charAt(pos);
+		if(pos < str.length()){
+			return str.charAt(pos);
+		}
+		return '\0';		
 	}
 
 	// not tested yet

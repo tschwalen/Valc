@@ -5,7 +5,7 @@ public class Valc {
 
 	public static void main(String[] args){
 
-		String program = "a := 4; \nb := a<1,2,3>;";
+		String program = "a := <3,4,3>; \nb := <2,0,6>; \nc := b - a;";
 		System.out.println(program);
 		interpret(program);
 	}

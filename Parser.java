@@ -51,6 +51,9 @@ public class Parser implements Constants{
 	}
 
 	private static void eat(int t){
+		if(pos >= tokenList.size()){
+			errorMsg("Error: Reached end of file while parsing.");
+		}
 		if(t != tokenList.get(pos).type){
 			parseError("eat()",t, tokenList.get(pos).type);
 		}
