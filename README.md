@@ -10,11 +10,15 @@ A sort of vector calculator/Language. Uses vectors as the primary data type, and
 The program currently supports variable assignment, and allows variables to be used in the aforementioned operations. 
 
 Example of input code:
-a := <1,1,1>;
-b := <1,2,3>;
-a x b;
 
-Output: 
+a := <1,1,1>;
+
+b := <1,2,3>;
+
+a x b
+
+Output:
+
 <1.0, -2.0, 1.0>
 
 
