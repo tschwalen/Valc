@@ -53,7 +53,20 @@ public class Vector{
 		return new Vector(newCont);
 	}
 
-	// todo: all of the below
+	public Vector subtract(Vector other){
+		if(size() != other.size()){
+			throw new IllegalArgumentException("Calling vector and argument vector must be of same dimensions.");
+		}
+
+		ArrayList<Double> newCont = new ArrayList<>(size());
+
+		for(int index = 0; index < size(); index++){
+			newCont.add(index, get(index) - other.get(index));
+		}		
+
+		return new Vector(newCont);
+	}
+
 
 	public double dotProduct(Vector other){
 		if(size() != other.size()){

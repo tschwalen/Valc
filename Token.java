@@ -10,7 +10,13 @@ public class Token implements Constants{
 		
 	}
 
+	public Object value(){ return contents; }
+
 	public String toString(){
 		return NAMES[type] + ", " + contents.toString();
+	}
+
+	public boolean hasType(int argType){
+		return argType == type;
 	}
 }

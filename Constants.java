@@ -13,6 +13,8 @@ public interface Constants {
 	final static int COMP = 8;
 	final static int ASSIGN = 9;
 	final static int SEMICOLON = 10;
+	final static int PIPE = 11;
+	final static int EOF = 12;
 
 	
 	final static String[] NAMES = {
@@ -26,7 +28,9 @@ public interface Constants {
 		"PROJ",
 		"COMP",
 		"ASSIGN",
-		"SEMICOLON"
+		"SEMICOLON",
+		"PIPE",
+		"EOF"
 	};	
 
 }

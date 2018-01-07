@@ -2,19 +2,25 @@
 import java.util.List;
 import java.util.ArrayList;
 
+// TODO: add negative number OR unary minus support
+
+// Performs lexical analysis
+
 public class Lexer implements Constants{
 
 	static int pos;
 	static String str;
 
 	public static void main(String[] args){
-		String example = "abc := <0, 1, 0> . <14, 12, 15>;";
+		String example = "a := <5, 12, 3>;\nb := 4.5<3, 3, 6>;\na proj b;\n";
+		System.out.println(example);
 		List<Token> list = lexicalAnalysis(example);
 		for(Token t : list){
 			System.out.println(t.toString());
 		}
 	}
 
+	// main loop method
 	public static List<Token> lexicalAnalysis(String input){
 		str = input;
 		pos = 0;
@@ -24,6 +30,7 @@ public class Lexer implements Constants{
 		while(pos < input.length()){
 			char c = input.charAt(pos);
 
+			// skip all whitespace
 			if(Character.isWhitespace(c)){
 				pos++;
 			}
@@ -63,10 +70,17 @@ public class Lexer implements Constants{
 				eat(';');
 				tokens.add(new Token(SEMICOLON, ";"));
 			}
+			else if(c == '|'){
+				eat('|');
+				tokens.add(new Token(PIPE, "|"));
+			}
 			else if(c == ':'){
 				eat(':');
 				eat('=');
 				tokens.add(new Token(ASSIGN, ":="));
+			}
+			else if(c == '$'){
+				readComment();
 			}
 		}
 		return tokens;
@@ -83,11 +97,29 @@ public class Lexer implements Constants{
 		return str.charAt(pos);
 	}
 
+	// not tested yet
+	private static void readComment(){
+		eat('$');
+		if(currentChar() == '-'){
+			while(currentChar() != '-' && str.charAt(pos + 1) != '$'){
+				pos++;
+			}
+			eat('-');
+			
+		}
+		else{
+			while(currentChar() != '\n'){
+				pos++;	
+			}
+		}
+		
+	}
 
-	// maybe rewrite with stringbuilder
+
+	// maybe rewrite with stringbuilder, need to modify code to accept 
+	// negative number literals
 	private static Double readNumber(){
 		String raw = "";
-
 		
 		while(isNumber(currentChar())){
 			raw = raw + currentChar();
@@ -104,7 +136,6 @@ public class Lexer implements Constants{
 			return Double.parseDouble(raw);
 		}
 
-		System.out.println(raw);
 		return (double)Integer.parseInt(raw);
 	}
 
