@@ -9,7 +9,7 @@ import java.util.ArrayList;
 	NOTE: Many of these rules can be expanded to take an expression instead of terminal values
 
 	<root> ::= <statement>*
-	<statement> ::= (<assignment> | <expression>) ";"
+	<statement> ::= (<assignment> | <expression> ) ";"
 
 	<assignment> ::= KEYWORD ":=" <expression>
 	<expression> ::= <unary-op> | <binary-exp> | <mag-exp> | <terminal>
@@ -18,6 +18,9 @@ import java.util.ArrayList;
 	<binary-exp> ::= (VECTOR | KEYWORD) <binary-op> (VECTOR | KEYWORD)
 	<binary-op> ::= "+" | "-" | "x" | "." | "proj" | "comp" 
 	<mag-exp> ::= "|" <terminal> "|"
+	
+	TODO:
+		add rules for output (echo), branching, and looping
 
 
 */

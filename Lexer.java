@@ -104,10 +104,12 @@ public class Lexer implements Constants{
 	private static void readComment(){
 		eat('$');
 		if(currentChar() == '-'){
+			eat('-');
 			while(currentChar() != '-' && str.charAt(pos + 1) != '$'){
 				pos++;
 			}
 			eat('-');
+			// last $ gets "eaten" by the main loop increment
 			
 		}
 		else{
