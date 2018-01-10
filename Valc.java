@@ -33,9 +33,11 @@ public class Valc {
 
 	private static void interpret(String sourceCode){
 		List<Token> tokens = Lexer.lexicalAnalysis(sourceCode);
+		/*
 		for(Token t : tokens){
 			System.out.println(t.toString());
 		}
+		*/
 
 
 		Node program = Parser.parseTokens(Lexer.lexicalAnalysis(sourceCode));

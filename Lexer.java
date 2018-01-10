@@ -20,7 +20,7 @@ public class Lexer implements Constants{
 		}
 	}
 
-	// main loop method
+	// primary method for lexing, contains the main loop
 	public static List<Token> lexicalAnalysis(String input){
 		str = input;
 		pos = 0;
@@ -39,10 +39,12 @@ public class Lexer implements Constants{
 				String string = readKeyword();
 				int type = KEYWORD;
 
+				// if more reserved words are added, this should be replaced by a hashmap
 				switch(string){
 					case "x": type = CROSS; break;
 					case "proj": type = PROJ; break;
 					case "comp": type = COMP; break;
+					case "echo": type = ECHO; break;
 				}
 
 				tokens.add(new Token(type, string));	
@@ -82,6 +84,10 @@ public class Lexer implements Constants{
 			else if(c == '$'){
 				readComment();
 			}
+			else{
+				throw new IllegalStateException("Illegal beginning of token: " + c);
+			}
+			
 		}
 		return tokens;
 	}
@@ -121,10 +127,21 @@ public class Lexer implements Constants{
 	}
 
 
-	// maybe rewrite with stringbuilder, need to modify code to accept 
-	// negative number literals
+	// maybe rewrite with stringbuilder
+
+	// added the ability to read negative integer and float literals.
+	// This only happens inside of vector literals since:
+	//		a. The lexer currently only reads lone number literals when it encounters digits
+	//		b. In future grammar implementations, the role of a unary minus may change based on context.
 	private static Double readNumber(){
 		String raw = "";
+
+		boolean isNegative = currentChar() == '-';
+		if(isNegative){
+			raw = raw + "-";
+			eat('-');
+		}
+
 		
 		while(isNumber(currentChar())){
 			raw = raw + currentChar();

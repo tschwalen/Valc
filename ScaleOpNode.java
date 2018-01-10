@@ -14,9 +14,14 @@ public class ScaleOpNode extends Node {
 	}
 
 	public Object eval(){
-		double scalar = (Double) scalarVal.eval();
-		Vector vector = (Vector) vectorVal.eval();
-		return vector.scale(scalar);
+		Object scalar = scalarVal.eval();
+		Object vector = vectorVal.eval();
+
+		if(scalar instanceof Double && vector instanceof Vector){
+			return ((Vector) vector).scale((Double) scalar);
+		}
+
+		throw new IllegalStateException("Undefined Behavior for adjacent terminals.");
 	}
 
 	public void printAst(){

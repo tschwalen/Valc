@@ -9,17 +9,26 @@ import java.util.ArrayList;
 	NOTE: Many of these rules can be expanded to take an expression instead of terminal values
 
 	<root> ::= <statement>*
-	<statement> ::= (<assignment> | <expression> ) ";"
+	<statement> ::= (<assignment> | <expression> | <echo>) ";"
+
+	<echo> ::= "echo" <expression>
 
 	<assignment> ::= KEYWORD ":=" <expression>
 	<expression> ::= <unary-op> | <binary-exp> | <mag-exp> | <terminal>
 	<terminal> ::= VECTOR | SCALAR | KEYWORD
-	<unary-exp> ::= (SCALAR | KEYWORD) VECTOR
+	<unary-exp> ::= <negation> | <scalar-mult>
+
+	<negation> ::= "-" <terminal>
+
+	<scalar-mult> ::= (SCALAR | KEYWORD) (VECTOR | KEYWORD)
+
 	<binary-exp> ::= (VECTOR | KEYWORD) <binary-op> (VECTOR | KEYWORD)
 	<binary-op> ::= "+" | "-" | "x" | "." | "proj" | "comp" 
 	<mag-exp> ::= "|" <terminal> "|"
 	
 	TODO:
+		add unary minus
+		extend the grammar to be more general
 		add rules for output (echo), branching, and looping
 
 
@@ -54,7 +63,7 @@ public class Parser implements Constants{
 	}
 
 	private static void eat(int t){
-		if(pos >= tokenList.size()){
+		if(!hasNextToken()){
 			errorMsg("Error: Reached end of file while parsing.");
 		}
 		if(t != tokenList.get(pos).type){
@@ -95,14 +104,23 @@ public class Parser implements Constants{
 	private static Node statement(){
 		Token curr = currentToken();
 		Node result = null;
-		if(curr.hasType(KEYWORD)){
+		if(curr.hasType(KEYWORD) && lookAhead().hasType(ASSIGN)){
 			result = assignment();
+		}
+		else if(curr.hasType(ECHO)){
+			result = echoStatement();
 		}
 		else{
 			result = expression();
 		}
 		eat(SEMICOLON);
 		return result;
+	}
+
+	private static Node echoStatement(){
+		eat(ECHO);
+		Node argument = expression();
+		return new EchoNode(argument);
 	}
 
 	private static Node assignment(){
@@ -118,16 +136,23 @@ public class Parser implements Constants{
 		if(curr.hasType(PIPE)){
 			return magnitudeExpression();
 		}
+		if(curr.hasType(MINUS)){
+			return unaryMinus();
+		}
 		else if(curr.hasType(SCALAR) || curr.hasType(VECTOR) || curr.hasType(KEYWORD)){
-			if(lookAhead().hasType(VECTOR)){
+
+
+			
+			if(lookAhead().hasType(VECTOR) || lookAhead().hasType(KEYWORD)){
 				// our only unary operation has to do with vectors, so if our next token is a vector we know what to do
 				if(curr.hasType(VECTOR)){
 					parseError("expression(), unary", VECTOR);
 				}
 				Node scale = terminal();
-				// the previous token is eaten by terminal(), and we've ensured that the next token is a vector
-				Node vector = new VectorNode((Vector)currentToken().value());
-				eat(VECTOR);
+				// the previous token is eaten by terminal(), and we've ensured that the next token is a vector or keyword
+				
+				Node vector = terminal();
+				
 				return new ScaleOpNode(scale, vector);
 
 			}
@@ -149,6 +174,14 @@ public class Parser implements Constants{
 		}
 		parseError("expression()",curr.type);
 		return null;
+	}
+
+
+	// read a unary minus expression - constant folding can be done here too
+	private static Node unaryMinus(){
+		eat(MINUS);
+		Node operand = terminal();
+		return new NegateNode(operand);
 	}
 
 	// consider constant folding
